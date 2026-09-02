@@ -2,9 +2,8 @@ pipeline {
     agent any
 
     triggers {
-        // Automatically build when Jenkins detects a new commit
-        // (works with polling OR a webhook — see notes below)
-        pollSCM('H/5 * * * *')   // checks git every 5 minutes
+        // Jenkins checks GitHub every 2 minutes for new commits (outbound only — no webhook needed)
+        pollSCM('H/2 * * * *')
     }
 
     environment {
