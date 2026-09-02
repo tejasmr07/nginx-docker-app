@@ -33,8 +33,8 @@ pipeline {
             steps {
                 echo "Deploying container on port ${HOST_PORT}..."
                 bat """
-                    docker stop ${CONTAINER_NAME} 2>nul || exit 0
-                    docker rm ${CONTAINER_NAME} 2>nul || exit 0
+                    docker stop ${CONTAINER_NAME}
+                    docker rm ${CONTAINER_NAME}
                     docker run -d --name ${CONTAINER_NAME} -p ${HOST_PORT}:${CONTAINER_PORT} --restart unless-stopped ${IMAGE_NAME}:latest
                 """
             }
