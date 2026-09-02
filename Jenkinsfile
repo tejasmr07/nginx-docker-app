@@ -7,7 +7,10 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = "my-html-app"
+        IMAGE_NAME     = "my-html-app"
+        CONTAINER_NAME = "nginx-html-app"
+        HOST_PORT      = "8082"
+        CONTAINER_PORT = "80"
     }
 
     stages {
@@ -25,11 +28,22 @@ pipeline {
                 bat "docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} -t ${IMAGE_NAME}:latest ."
             }
         }
+
+        stage('Deploy') {
+            steps {
+                echo "Deploying container on port ${HOST_PORT}..."
+                bat """
+                    docker stop ${CONTAINER_NAME} 2>nul || exit 0
+                    docker rm ${CONTAINER_NAME} 2>nul || exit 0
+                    docker run -d --name ${CONTAINER_NAME} -p ${HOST_PORT}:${CONTAINER_PORT} --restart unless-stopped ${IMAGE_NAME}:latest
+                """
+            }
+        }
     }
 
     post {
         success {
-            echo "✅ Build #${BUILD_NUMBER} succeeded — image ${IMAGE_NAME}:latest is ready."
+            echo "✅ Build #${BUILD_NUMBER} succeeded — visit http://localhost:${HOST_PORT}"
         }
         failure {
             echo "❌ Build failed. Check console output above."
