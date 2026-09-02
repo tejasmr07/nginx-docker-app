@@ -1,0 +1,9 @@
+version: "3.8"
+
+services:
+  web:
+    build: .
+    container_name: nginx-html-app
+    ports:
+      - "8082:80"   # visit http://localhost:8082
+    restart: unless-stopped
